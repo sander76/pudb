@@ -1912,6 +1912,16 @@ Error with jump. Note that jumping only works on the topmost stack frame.
         add_vi_nav_keys(self.source_sigwrap)
         add_help_keys(self.source_sigwrap, helpmain)
 
+        # Prevent scroll keys from propagating out of the source panel into the
+        # panel below. The inner ListBox already tried (and failed) to scroll
+        # before these listeners are reached, so a no-op here is sufficient.
+        def absorb_key(w, size, key):
+            pass
+
+        self.source_sigwrap.listen("down", absorb_key)
+        self.source_sigwrap.listen("page down", absorb_key)
+        self.source_sigwrap.listen("end", absorb_key)
+
         # }}}
 
         # {{{ command line listeners
